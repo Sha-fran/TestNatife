@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 import com.example.testnatife.databinding.GifItemBinding
 
 class GifRVAdapter(
-    var items: MutableList<Data> = mutableListOf(),
+    var items: MutableList<DataResponse> = mutableListOf(),
     var onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<GifRVAdapter.SuperheroRecyclerViewHolder>() {
 
@@ -24,15 +24,11 @@ class GifRVAdapter(
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: SuperheroRecyclerViewHolder, position: Int) {
-//        holder.superheroName.text = String.format("Name: ${items[position].name}")
-//        holder.superheroSlug.text = String.format("Slug: ${items[position].slug}")
-//        holder.superheroGender.text = String.format("Gender: ${items[position].appearance?.gender}")
-//        holder.superheroRace.text = String.format("Race: ${items[position].appearance?.race}")
 
-        Glide.with(holder.superheroImage)
-//            .load(items[position].images?.lg)
-            .load(items[position].images?.hd?.mp4)
-            .into(holder.superheroImage)
+        Glide.with(holder.gifImage)
+            .load(items[position].data[position].images.original.url)
+//            .load(items[position].data.get(position).images.original.url)
+            .into(holder.gifImage)
 
         holder.itemView.setOnClickListener {
             onItemClickListener.onItemClick(items[position])
@@ -40,11 +36,11 @@ class GifRVAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(item: Data)
+        fun onItemClick(item: DataResponse)
     }
 
     inner class SuperheroRecyclerViewHolder(binding: GifItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val superheroImage = binding.imageGif
+        val gifImage = binding.imageGif
     }
 }

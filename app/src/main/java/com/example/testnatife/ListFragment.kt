@@ -1,7 +1,6 @@
 package com.example.testnatife
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import io.reactivex.schedulers.Schedulers
 
 class ListFragment : Fragment(), GifRVAdapter.OnItemClickListener{
     private lateinit var binding: ListFragmentLayoutBinding
-    private var onItemClick:(item: Data) -> Unit = {}
+    private var onItemClick:(item: DataResponse) -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,15 +27,14 @@ class ListFragment : Fragment(), GifRVAdapter.OnItemClickListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val api =ApiClient.client.create(ApiInterface::class.java)
-        val apiKey = "80xeeh9hOqxgQPcSfXE5q4uNiA2QQqeO&limit=20&offset=0"
+        val api = ApiClient.client.create(ApiInterface::class.java)
         val adapter = GifRVAdapter(onItemClickListener = this)
 
-        api.getGif(apiKey)
+        api.getGif()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                adapter.items = it
+                adapter.items = mutableListOf(it)
                 adapter.notifyDataSetChanged()
                 binding.gifRecyclerWiew.adapter = adapter
             },
@@ -46,12 +44,11 @@ class ListFragment : Fragment(), GifRVAdapter.OnItemClickListener{
         binding.gifRecyclerWiew.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    override fun onItemClick(item: Data) {
+    override fun onItemClick(item: DataResponse) {
         onItemClick.invoke(item)
     }
 
-    fun setItemClickListener(lambda: (item: Data)-> Unit) {
+    fun setItemClickListener(lambda: (item: DataResponse)-> Unit) {
         onItemClick = lambda
     }
 }
-
