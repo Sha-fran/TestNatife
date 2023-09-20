@@ -1,4 +1,7 @@
 package com.example.testnatife
 
-class DetailsFragment {
+import androidx.fragment.app.Fragment
+
+class DetailsFragment:Fragment() {
+
 }
