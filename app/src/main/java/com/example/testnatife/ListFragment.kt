@@ -13,7 +13,7 @@ import io.reactivex.schedulers.Schedulers
 
 class ListFragment : Fragment(), GifRVAdapter.OnItemClickListener{
     private lateinit var binding: ListFragmentLayoutBinding
-    private var onItemClick:(item: DataResponse) -> Unit = {}
+    private var onItemClick:(item: Data) -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +34,7 @@ class ListFragment : Fragment(), GifRVAdapter.OnItemClickListener{
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                adapter.items = mutableListOf(it)
+                adapter.items = it.data
                 adapter.notifyDataSetChanged()
                 binding.gifRecyclerWiew.adapter = adapter
             },
@@ -44,11 +44,11 @@ class ListFragment : Fragment(), GifRVAdapter.OnItemClickListener{
         binding.gifRecyclerWiew.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    override fun onItemClick(item: DataResponse) {
+    override fun onItemClick(item: Data) {
         onItemClick.invoke(item)
     }
 
-    fun setItemClickListener(lambda: (item: DataResponse)-> Unit) {
+    fun setItemClickListener(lambda: (item: Data)-> Unit) {
         onItemClick = lambda
     }
 }

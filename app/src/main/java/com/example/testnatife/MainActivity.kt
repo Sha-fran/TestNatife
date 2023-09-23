@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         val listFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as ListFragment
 
         listFragment.setItemClickListener {
-            val detailsFragment = DetailsFragment()
+            val detailsFragment = DetailsFragment().newInstance(imageUrl = it.images.original.url)
 
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, detailsFragment)

@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 import com.example.testnatife.databinding.GifItemBinding
 
 class GifRVAdapter(
-    var items: MutableList<DataResponse> = mutableListOf(),
+    var items: List<Data> = mutableListOf(),
     var onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<GifRVAdapter.SuperheroRecyclerViewHolder>() {
 
@@ -26,8 +26,7 @@ class GifRVAdapter(
     override fun onBindViewHolder(holder: SuperheroRecyclerViewHolder, position: Int) {
 
         Glide.with(holder.gifImage)
-            .load(items[position].data[position].images.original.url)
-//            .load(items[position].data.get(position).images.original.url)
+            .load(items[position].images.original.url)
             .into(holder.gifImage)
 
         holder.itemView.setOnClickListener {
@@ -36,7 +35,7 @@ class GifRVAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(item: DataResponse)
+        fun onItemClick(item: Data)
     }
 
     inner class SuperheroRecyclerViewHolder(binding: GifItemBinding) :
