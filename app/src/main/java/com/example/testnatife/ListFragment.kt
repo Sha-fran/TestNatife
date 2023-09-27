@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testnatife.databinding.ListFragmentLayoutBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,21 +28,22 @@ class ListFragment : Fragment(), GifRVAdapter.OnItemClickListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val api = ApiClient.client.create(ApiInterface::class.java)
-        val adapter = GifRVAdapter(onItemClickListener = this)
 
-        api.getGif()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                adapter.items = it.data
-                adapter.notifyDataSetChanged()
-                binding.gifRecyclerWiew.adapter = adapter
-            },
-                {
-                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
-                })
+        val adapter = GifRVAdapter(onItemClickListener = this)
+        binding.gifRecyclerWiew.adapter = adapter
         binding.gifRecyclerWiew.layoutManager = LinearLayoutManager(requireContext())
+
+        val gifViewModel:GifViewModel = ViewModelProvider(this).get(GifViewModel::class.java)
+
+        gifViewModel.uiStateLiveData.observe(viewLifecycleOwner) {uiState ->
+            when(uiState) {
+                is UIState.EmptyList -> Unit
+                is UIState.FilledList -> {
+                    adapter.items = uiState.list
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
     }
 
     override fun onItemClick(item: Data) {
